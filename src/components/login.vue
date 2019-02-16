@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     // 登录请求
-    handleLogin() {
+    async handleLogin() {
       // console.log(1)
       // 前提: api-server-> node app.js
       // 服务器支持跨域(api-server和项目代码不放在一块也可以)
@@ -34,8 +34,31 @@ export default {
       // 1.url写错
       // 2. axios导入失败
       // 3.客户端一点问题没有->服务器卡死=重启服务器
-      this.$http
-        .post(`login`, this.formDate)
+      const res = await this.$http.post(`login`, this.formDate);
+      // console.log(res);
+      const {
+        data: {
+          data: { token },
+          meta: { msg, status }
+        }
+      } = res;
+      if (status === 200) {
+        // 把正确的用户的token保存起来
+        // 存值
+        localStorage.setItem("token", token);
+        // 取值
+        // const aa = localStorage.getItem("token");
+        // console.log(aa);
+
+        // 渲染home组件  =改标识 = js改标识
+        this.$router.push({
+          name: "home"
+        });
+      } else {
+        // 提示框
+        this.$message.error(msg);
+      }
+      /*
         .then(res => {
           console.log(res);
           const {
@@ -57,6 +80,7 @@ export default {
         .catch(err => {
           console.log(err);
         });
+        */
     }
   }
 };
