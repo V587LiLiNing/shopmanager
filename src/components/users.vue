@@ -10,9 +10,7 @@
     <el-row class="sreachbox">
       <el-col>
         <!-- 搜索框 -->
-        <el-input 
-        class="sreachInput"
-        placeholder="请输入内容" v-model="query">
+        <el-input class="sreachInput" placeholder="请输入内容" v-model="query">
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
 
@@ -21,6 +19,15 @@
       </el-col>
     </el-row>
     <!-- 表格 -->
+    <el-table :data="list" style="width: 100%">
+      <el-table-column prop="date" label="#" width="80"></el-table-column>
+      <el-table-column prop="date" label="姓名" width="120"></el-table-column>
+      <el-table-column prop="date" label="邮箱" width="140"></el-table-column>
+      <el-table-column prop="date" label="电话" width="140"></el-table-column>
+      <el-table-column prop="date" label="创建日期" width="140"></el-table-column>
+      <el-table-column prop="date" label="用户状态" width="140"></el-table-column>
+      <el-table-column prop="date" label="禁用" width="200"></el-table-column>
+    </el-table>
     <!-- 分页 -->
   </el-card>
 </template>
@@ -29,7 +36,31 @@
 export default {
   data () {
     return {
-      query: ''
+      query: '',
+      pagenum: 1,
+      pagesize: 2,
+      //   表格数据
+      list: []
+    }
+  },
+  created () {
+    this.getTableDate()
+  },
+  methods: {
+    // 获取表格数据
+    async getTableDate () {
+      // 除了登录请求,其他所有请求需要授权
+      // 接口文档中说 发送请求时需要使用axios设置请求头
+
+      const AUTH_TOKEN = localStorage.getItem('token')
+      this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
+
+      const res = await this.$http.get(
+        `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${
+          this.pagesize
+        }`
+      )
+      console.log(res)
     }
   }
 }
@@ -37,12 +68,12 @@ export default {
 
 <style>
 .box {
-    height: 100%;
+  height: 100%;
 }
 .sreachbox {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 .sreachInput {
-    width: 350px;
+  width: 350px;
 }
 </style>
