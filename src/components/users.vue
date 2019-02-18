@@ -10,8 +10,13 @@
     <el-row class="sreachbox">
       <el-col>
         <!-- 搜索框 -->
-        <el-input class="sreachInput" placeholder="请输入内容" v-model="query">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input
+        @clear="getAllUsers()"
+        clearable
+        class="sreachInput" placeholder="请输入内容" v-model="query">
+          <el-button slot="append" icon="el-icon-search"
+          @click="searchUser()"
+          ></el-button>
         </el-input>
 
         <!-- 添加按钮 -->
@@ -96,6 +101,17 @@ export default {
     this.getTableDate()
   },
   methods: {
+      // 清空搜索框时获取所有用户
+      getAllUsers() {
+        this.getTableDate()
+      },
+      // 搜索用户
+      searchUser() {
+        // 按照query关键字搜索
+        // query="admin"
+        this.pagenum = 1
+        this.getTableDate()
+      },
     // 分页相关的方法
     handleSizeChange (val) {
       console.log(`每页 ${val}条`)
