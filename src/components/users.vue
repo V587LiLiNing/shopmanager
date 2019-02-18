@@ -19,7 +19,9 @@
       </el-col>
     </el-row>
     <!-- 表格 -->
-    <el-table :data="list" style="width: 100%">
+    <el-table 
+    height="350px"
+    :data="list" style="width: 100%">
       <el-table-column prop="id" label="#" width="80"></el-table-column>
       <el-table-column prop="username" label="姓名" width="120"></el-table-column>
       <el-table-column prop="email" label="邮箱" width="140"></el-table-column>
@@ -58,6 +60,23 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
+    <!--
+    @size-change 每页条数改变时
+    @current-change 页码改变时(当前1页  点击2页)
+    current-page  当显示第几页 页码
+    page-sizes    每页条数的不同情况的数组
+    layout  附加功能
+    -->
+    <el-pagination
+      class="page"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pagenum"
+      :page-sizes="[2, 4, 6, 8]"
+      :page-size="2"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </el-card>
 </template>
 
@@ -67,7 +86,8 @@ export default {
     return {
       query: '',
       pagenum: 1,
-      pagesize: 10,
+      pagesize: 2,
+      total: -1,
       //   表格数据
       list: []
     }
@@ -76,6 +96,22 @@ export default {
     this.getTableDate()
   },
   methods: {
+    // 分页相关的方法
+    handleSizeChange (val) {
+      console.log(`每页 ${val}条`)
+      // 按照新的pagesize发送请求
+      this.pagenum = 1
+      this.pagesize = val
+      this.getTableDate()
+    },
+    // 当前2页-> 点击3 - > 触发下面的方法-> val=3
+    handleCurrentChange (val) {
+      console.log(`当前页: ${val}`)
+      // 按照新页码发送请求
+      this.pagenum = val
+      this.getTableDate()
+    },
+
     // 获取表格数据
     async getTableDate () {
       // 除了登录请求,其他所有请求需要授权
@@ -93,8 +129,9 @@ export default {
       // console.log(res)
       const {data, meta: {msg, status}} = res.data
       if (status === 200) {
+        this.total = data.total
         this.list = data.users
-        console.log(this.list)
+        // console.log(this.list)
       }
     }
   }
@@ -110,5 +147,8 @@ export default {
 }
 .sreachInput {
   width: 350px;
+}
+.page {
+  margin-top: 30px;
 }
 </style>
