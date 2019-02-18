@@ -35,7 +35,7 @@
       <!-- 思路3 msg不能是prop内容 否则就会报错 以下思路 -->
         <!-- 1. 给单元格外层加template -->
         <!-- 2. 给template 设置slot-scope
-        3. slot-scope的值会自动绑定外层数据结构 这里是el-table的data的值list 
+        3. slot-scope的值会自动绑定外层数据结构 这里是el-table的data的值list
         4. 在内容位置写scope.row 自动取出list中每个对象 其中的row 固定写法-->
       <el-table-column label="创建日期" width="140">
         <template slot-scope="scope">
@@ -43,8 +43,19 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="date" label="用户状态" width="140"></el-table-column>
-      <el-table-column prop="date" label="禁用" width="200"></el-table-column>
+      <el-table-column label="用户状态" width="140">
+        <template slot-scope="scope">
+        <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+      </el-switch>
+      </template>
+      </el-table-column>
+      <el-table-column prop="date" label="操作" width="200">
+        <template slot-scope="scope">
+        <el-button type="primary" icon="el-icon-edit" circle size="mini" plain></el-button>
+        <el-button type="danger" icon="el-icon-delete" circle size="mini" plain></el-button>
+        <el-button type="success" icon="el-icon-check" circle size="mini" plain></el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
   </el-card>
@@ -56,7 +67,7 @@ export default {
     return {
       query: '',
       pagenum: 1,
-      pagesize: 2,
+      pagesize: 10,
       //   表格数据
       list: []
     }
@@ -81,10 +92,9 @@ export default {
       // 解构赋值来使用数据
       // console.log(res)
       const {data, meta: {msg, status}} = res.data
-      if(status === 200) {
-        this.list = data.users;
-        console.log(this.list);
-        
+      if (status === 200) {
+        this.list = data.users
+        console.log(this.list)
       }
     }
   }
