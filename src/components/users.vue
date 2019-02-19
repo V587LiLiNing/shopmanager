@@ -21,9 +21,7 @@
         </el-input>
 
         <!-- 添加按钮 -->
-        <el-button type="success"
-        @click="showDiaAddUser()"
-        >添加按钮</el-button>
+        <el-button type="success" @click="showDiaAddUser()">添加按钮</el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
@@ -100,7 +98,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
+        <el-button type="primary" @click="addUser()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -131,9 +129,27 @@ export default {
     this.getTableDate();
   },
   methods: {
+    // 添加用户功能
+    async addUser() {
+      // 发送请求
+      const res = await this.$http.post(`users`, this.formdate);
+      console.log(res);
+
+      const {
+        meta: { msg, status }
+      } = res.data;
+      if (status === 201) {
+        // 关闭对话框
+        this.dialogFormVisibleAdd = false;
+        // 更新表格
+        this.getTableDate();
+      }
+    },
     // 添加用户按钮-打开弹框
     showDiaAddUser() {
       this.dialogFormVisibleAdd = true;
+      // 清空原有内容
+      this.formdate = {};
     },
     // 清空搜索框时获取所有用户
     getAllUsers() {
