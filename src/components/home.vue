@@ -23,18 +23,17 @@
           default-active="2"
           class="el-menu-vertical-demo"
         >
-
-        <!-- 1 -->
+          <!-- 1 -->
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>用户管理</span>
             </template>
 
-              <el-menu-item index="users">
-                <i class="el-icon-menu"></i>
-                <span>用户列表</span>
-                </el-menu-item>
+            <el-menu-item index="users">
+              <i class="el-icon-menu"></i>
+              <span>用户列表</span>
+            </el-menu-item>
           </el-submenu>
           <!-- 2 -->
           <el-submenu index="2">
@@ -43,15 +42,15 @@
               <span>权限管理</span>
             </template>
 
-              <el-menu-item index="1-1">
-                <i class="el-icon-menu"></i>
-                <span>角色列表</span>
-                </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-menu"></i>
+              <span>角色列表</span>
+            </el-menu-item>
 
-                <el-menu-item index="1-1">
-                <i class="el-icon-menu"></i>
-                <span>权限列表</span>
-                </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-menu"></i>
+              <span>权限列表</span>
+            </el-menu-item>
           </el-submenu>
           <!-- 3 -->
           <el-submenu index="3">
@@ -60,18 +59,18 @@
               <span>商品管理</span>
             </template>
 
-              <el-menu-item index="1-1">
-                <i class="el-icon-menu"></i>
-                <span>商品列表</span>
-                </el-menu-item>
-                <el-menu-item index="1-1">
-                <i class="el-icon-menu"></i>
-                <span>分类列表</span>
-                </el-menu-item>
-                <el-menu-item index="1-1">
-                <i class="el-icon-menu"></i>
-                <span>商品分类</span>
-                </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-menu"></i>
+              <span>商品列表</span>
+            </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-menu"></i>
+              <span>分类列表</span>
+            </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-menu"></i>
+              <span>商品分类</span>
+            </el-menu-item>
           </el-submenu>
           <!-- 4 -->
           <el-submenu index="4">
@@ -80,10 +79,10 @@
               <span>订单管理</span>
             </template>
 
-              <el-menu-item index="1-1">
-                <i class="el-icon-menu"></i>
-                <span>订单列表</span>
-                </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-menu"></i>
+              <span>订单列表</span>
+            </el-menu-item>
           </el-submenu>
           <!-- 5 -->
           <el-submenu index="5">
@@ -92,10 +91,10 @@
               <span>数据统计</span>
             </template>
 
-              <el-menu-item index="1-1">
-                <i class="el-icon-menu"></i>
-                数据报表
-                </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-menu"></i>
+              数据报表
+            </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -108,35 +107,34 @@
 
 <script>
 export default {
-
   // beforecreate
   // create
   // 视图加载之前 验证token是否存在, 若不存在跳转到登录页面
-  beforeMount () {
-    if (!localStorage.getItem('token')) {
+  beforeMount() {
+    if (!localStorage.getItem("token")) {
       this.$router.push({
-        name: 'login'
-      })
-      this.$message.warning('请先登录')
+        name: "login"
+      });
+      this.$message.warning("请先登录");
     }
   },
-  mounted () {
-    console.log('登录成功')
+  mounted() {
+    console.log("登录成功");
   },
   methods: {
     // 退出
-    handleLoginout () {
+    handleLoginout() {
       // 1. 清除token
-      localStorage.clear()
+      localStorage.clear();
       // 2. 来到登录
       this.$router.push({
-        name: 'login'
-      })
+        name: "login"
+      });
       // 3. 登录
-      this.$message.warning('退出成功')
+      this.$message.warning("退出成功");
     }
   }
-}
+};
 </script>
 
 <style>

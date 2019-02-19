@@ -53,8 +53,22 @@
       </el-table-column>
       <el-table-column prop="date" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" circle size="mini" plain></el-button>
-          <el-button type="danger" icon="el-icon-delete" circle size="mini" plain></el-button>
+          <el-button
+            @click="showDiaEditUser(scope.row)"
+            type="primary"
+            icon="el-icon-edit"
+            circle
+            size="mini"
+            plain
+          ></el-button>
+          <el-button
+            @click="showMsgBoxDele(scope.row)"
+            type="danger"
+            icon="el-icon-delete"
+            circle
+            size="mini"
+            plain
+          ></el-button>
           <el-button type="success" icon="el-icon-check" circle size="mini" plain></el-button>
         </template>
       </el-table-column>
@@ -101,6 +115,28 @@
         <el-button type="primary" @click="addUser()">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 编辑用户-对话框 -->
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
+      <!-- 表单 -->
+      <el-form label-position="left" label-width="80px" :model="formdate">
+        <el-form-item label="用户名">
+          <el-input disabled v-model="formdate.username"></el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱">
+          <el-input v-model="formdate.email"></el-input>
+        </el-form-item>
+        <el-form-item label="电话">
+          <el-input v-model="formdate.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="editUser()">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -116,6 +152,7 @@ export default {
       list: [],
       // 对话框
       dialogFormVisibleAdd: false,
+      dialogFormVisibleEdit: false,
       // 表单数据 -> 将来要发送post请求-> 请求体
       formdate: {
         username: "",
@@ -129,6 +166,63 @@ export default {
     this.getTableDate();
   },
   methods: {
+    // 编辑-发送请求
+    async editUser() {
+      // 编辑-确定发送请求
+      // id-> user.id->user-> 1.data 没有 2. 方法实参也没有(因为不在template里面 所以不能传实参)
+      // this.formdate 上一步已经有用户数据
+
+      const res = await this.$http.put(
+        `users/${this.formdate.id}`,
+        this.formdate
+      );
+      console.log(res);
+      const {
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        console.log(1);
+        // 弹框提示
+        this.$message.success("编辑成功");
+        // 关闭对话框
+        this.dialogFormVisibleEdit = false;
+        // 更新表格
+        this.getTableDate();
+      }
+    },
+    // 编辑 - 显示对话框
+    showDiaEditUser(user) {
+      // 获取当前用户数据
+      this.formdate = user;
+      // 显示对话框
+      this.dialogFormVisibleEdit = true;
+    },
+    // 删除- 显示确认框
+    showMsgBoxDele(user) {
+      this.$confirm("是否把我删掉?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          // id -> 用户id数据 -> user.id
+          const res = await this.$http.delete(`users/${user.id}`);
+          // console.log(res);
+          const {
+            meta: { msg, status }
+          } = res.data;
+          if (status === 200) {
+            // 删除提示框
+            this.$message.success("删除成功");
+            this.pagenum = 1;
+            // 更新表格
+            this.getTableDate();
+          }
+        })
+        .catch(() => {
+          this.$message.info("取消删除");
+        });
+    },
     // 添加用户功能
     async addUser() {
       // 发送请求
@@ -143,6 +237,8 @@ export default {
         this.dialogFormVisibleAdd = false;
         // 更新表格
         this.getTableDate();
+        // 弹框
+        this.$message.success("添加成功");
       }
     },
     // 添加用户按钮-打开弹框
