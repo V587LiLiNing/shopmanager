@@ -279,10 +279,13 @@ export default {
     },
     // 编辑 - 显示对话框
     showDiaEditUser(user) {
-      // 获取当前用户数据
-      this.formdate = user;
       // 显示对话框
       this.dialogFormVisibleEdit = true;
+      // 获取当前用户数据
+      // this.formdate = user;
+      this.formdate.username = user.username;
+      this.formdate.email = user.email;
+      this.formdate.mobile = user.mobile;
     },
     // 删除- 显示确认框
     showMsgBoxDele(user) {
