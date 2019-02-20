@@ -48,7 +48,12 @@
 
       <el-table-column label="用户状态" width="140">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch
+            @change="changeStatus(scope.row)"
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          ></el-switch>
         </template>
       </el-table-column>
       <el-table-column prop="date" label="操作" width="200">
@@ -69,7 +74,14 @@
             size="mini"
             plain
           ></el-button>
-          <el-button type="success" icon="el-icon-check" circle size="mini" plain></el-button>
+          <el-button
+            @click="showDiaSetRole(scope.row)"
+            type="success"
+            icon="el-icon-check"
+            circle
+            size="mini"
+            plain
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -137,6 +149,35 @@
         <el-button type="primary" @click="editUser()">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 对话框 -->
+    <el-dialog title="分配角色" :visible.sync="dialogFormVisibleRole">
+      <el-form label-position="left" label-width="80px" :model="formdate">
+        <el-form-item label="用户名">{{formdate.username}}</el-form-item>
+        <el-form-item label="角色">
+          <!-- v-model 绑定表单元素 -->
+          <!--  1. type="text" input
+                2. 其他表单元素  (textrea等)  就是select+option
+                回顾下拉框特性
+                1. 默认显示请选中-> 当v-model的数据值 和option中请选择的value值相同时,此时显示请选择
+          2. 当选个某个option时, v-model的值等于选中的option中的value值-->
+          <el-select v-model="selectVal" placeholder="请选择角色名">
+            <el-option disabled label="请选择" :value="-1"></el-option>
+            <!-- 分成两类 1, 请选择 2. 后台返回的角色数据 将来要获取角色数据 v-for遍历 -->
+            <el-option
+              v-for="(item, i) in roles"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleRole = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -153,19 +194,50 @@ export default {
       // 对话框
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
+      dialogFormVisibleRole: false,
       // 表单数据 -> 将来要发送post请求-> 请求体
       formdate: {
         username: "",
         password: "",
         email: "",
         mobile: ""
-      }
+      },
+      // 下拉框用的数据
+      selectVal: -1,
+      // currUsername: "",
+      // 角色数组
+      roles: []
     };
   },
   created() {
     this.getTableDate();
   },
   methods: {
+    // 分配角色 - 打开对话框
+    async showDiaSetRole(user) {
+      this.currUsername = user.username;
+      this.formdate = user;
+      this.dialogFormVisibleRole = true;
+
+      // 获取角色名称
+      const res = await this.$http.get(`roles`);
+      // console.log(res);
+      this.roles = res.data.data;
+
+      // 给下拉v-model绑定的selectVal赋值
+      // 1. 接口文档中的  根据用户id 获取角色id 的接口
+      const res2 = await this.$http.get(`users/${user.id}`);
+      // console.log(res2);
+
+      this.selectVal = res2.data.data.rid;
+    },
+    // 修改用户状态
+    async changeStatus(user) {
+      const res = await this.$http.put(
+        `users/${user.id}/state/${user.mg_state}`
+      );
+      console.log(res);
+    },
     // 编辑-发送请求
     async editUser() {
       // 编辑-确定发送请求
