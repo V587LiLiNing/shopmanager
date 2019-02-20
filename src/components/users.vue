@@ -175,7 +175,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleRole = false">确 定</el-button>
+        <el-button type="primary" @click="setRole()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -204,7 +204,7 @@ export default {
       },
       // 下拉框用的数据
       selectVal: -1,
-      // currUsername: "",
+      currUserId: -1,
       // 角色数组
       roles: []
     };
@@ -213,10 +213,25 @@ export default {
     this.getTableDate();
   },
   methods: {
+    // 分配角色- 发送请求
+    async setRole() {
+      const res = await this.$http.put(`users/${this.currUserId}/role`, {
+        rid: this.selectVal
+      });
+      console.log(res);
+      const {
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        // 关闭对话框
+        this.dialogFormVisibleRole = false;
+      }
+    },
     // 分配角色 - 打开对话框
     async showDiaSetRole(user) {
-      this.currUsername = user.username;
+      // this.currUsername = user.username;
       this.formdate = user;
+      this.currUserId = user.id;
       this.dialogFormVisibleRole = true;
 
       // 获取角色名称
