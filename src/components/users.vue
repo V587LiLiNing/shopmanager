@@ -366,9 +366,6 @@ export default {
       // 除了登录请求,其他所有请求需要授权
       // 接口文档中说 发送请求时需要使用axios设置请求头
 
-      const AUTH_TOKEN = localStorage.getItem("token");
-      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
-
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${
           this.pagesize
