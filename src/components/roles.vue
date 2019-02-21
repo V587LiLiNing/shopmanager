@@ -134,6 +134,7 @@ export default {
       if (status === 200) {
         this.dialogFormVisible = false;
         this.getRoles();
+        this.$message.success(msg);
       }
     },
 
