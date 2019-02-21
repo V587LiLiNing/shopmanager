@@ -64,6 +64,23 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 对话框 -->
+    <el-dialog title="分配权限" :visible.sync="dialogFormVisible">
+      <el-tree
+        :data="treelist"
+        show-checkbox
+        node-key="id"
+        default-expand-all
+        :default-checked-keys="arrCheck"
+        :props="defaultProps"
+      ></el-tree>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -71,13 +88,51 @@
 export default {
   data() {
     return {
-      roles: []
+      roles: [],
+      dialogFormVisible: false,
+      // 树形结构相关数据
+      treelist: [],
+      arrCheck: [],
+      // arrExpand: [],
+      defaultProps: {
+        label: "authName",
+        children: "children"
+      }
     };
   },
   created() {
     this.getRoles();
   },
   methods: {
+    // 分配权限中的 打开对话框
+    async showDiaSetRights(role) {
+      // 获取数据
+      const res = await this.$http.get(`rights/tree`);
+      console.log(res);
+      const {
+        meta: { msg, status },
+        data
+      } = res.data;
+      if (status === 200) {
+        this.treelist = data;
+        // for嵌套
+
+        // 获取当前角色的权限id<- 角色
+        const temp2 = [];
+        role.children.forEach(item1 => {
+          // temp2.push(item1.id);
+          item1.children.forEach(item2 => {
+            // temp2.push(item2.id);
+            item2.children.forEach(item3 => {
+              temp2.push(item3.id);
+            });
+          });
+        });
+        console.log(temp2);
+        this.arrCheck = temp2;
+      }
+      this.dialogFormVisible = true;
+    },
     // 取消权限
     async deleRights(role, rights) {
       // roleId-> 角色id
@@ -99,7 +154,7 @@ export default {
         role.children = data;
       }
     },
-    showDiaSetRights() {},
+
     async getRoles() {
       const res = await this.$http.get(`roles`);
       console.log(res);
