@@ -225,6 +225,7 @@ export default {
       if (status === 200) {
         // 关闭对话框
         this.dialogFormVisibleRole = false;
+        this.$message.success(msg);
       }
     },
     // 分配角色 - 打开对话框

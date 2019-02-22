@@ -60,12 +60,7 @@ export default {
   // create
   // 视图加载之前 验证token是否存在, 若不存在跳转到登录页面
   beforeMount() {
-    if (!localStorage.getItem("token")) {
-      this.$router.push({
-        name: "login"
-      });
-      this.$message.warning("请先登录");
-    }
+    
   },
   mounted() {
     console.log("登录成功");
