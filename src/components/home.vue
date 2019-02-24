@@ -59,9 +59,7 @@ export default {
   // beforecreate
   // create
   // 视图加载之前 验证token是否存在, 若不存在跳转到登录页面
-  beforeMount() {
-    
-  },
+  beforeMount() {},
   mounted() {
     console.log("登录成功");
   },
@@ -102,10 +100,10 @@ export default {
   background-color: #b3c0d1;
 }
 .aside {
-  background-color: red;
+  background-color: #fff;
 }
 .main {
-  background-color: orange;
+  background-color: #d5e5ee;
 }
 .middle {
   line-height: 60px;
