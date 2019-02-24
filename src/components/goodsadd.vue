@@ -190,6 +190,12 @@ export default {
         if (this.selectedOptions.length !== 3) {
           // 提示
           this.$message.error("请先选择三级分类!");
+
+          if (this.active === "2") {
+            this.arrDy = [];
+          } else {
+            this.arrStatic = [];
+          }
           return;
         }
         // 静态数据
