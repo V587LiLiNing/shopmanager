@@ -235,6 +235,7 @@ export default {
                 item.attr_vals = item.attr_vals.split(",");
               }
             });
+            console.log(this.arrDy);
           }
         }
       }
